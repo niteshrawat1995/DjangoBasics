@@ -45,9 +45,19 @@ class Source(MXCatalog):
         unique_together = (("name", "title"), )
 
 
+# TODO : put in utils
 # {media_root}/{instance.id}/example.png
 def upload_location(instance, filename):
     return "{}/{}".format(instance.pk, filename)
+
+
+class Tag(MXCatalog):
+    """
+    asdadadafd
+    """
+    name = models.CharField(verbose_name=_("Tag name"), max_length=255)
+    is_active = models.BooleanField(
+        verbose_name=_("Tag is applicable?"), default=True)
 
 
 class Content(MXCatalog):
@@ -55,8 +65,9 @@ class Content(MXCatalog):
     what does model represent?
     """
     source = models.ForeignKey(to=Source, on_delete=models.CASCADE)
+    tags = models.ManyToManyField(to=Tag, null=True, blank=True)
 
-    name = models.CharField(verbose_name=_("Source name"), max_length=255)
+    name = models.CharField(verbose_name=_("Content name"), max_length=255)
     slug = models.SlugField(verbose_name=_("Content Slug"), unique=True)
     icon = models.ImageField(verbose_name=_(
         "Content icon"), max_length=255, blank=True, null=True)
@@ -67,3 +78,8 @@ class Content(MXCatalog):
         to=User, on_delete=models.CASCADE, related_name=_("content_created_by"))
     modified_by = models.ForeignKey(
         to=User, on_delete=models.CASCADE, related_name=_("content_modified_by"))
+
+    class Meta:
+        verbose_name_plural = _("Content")
+        verbose_name = _("Content")
+        ordering = ["created_at"]

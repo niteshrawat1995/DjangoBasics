@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Source, Content
+from .models import Source, Content, Tag
 # Register your models here.
 
 
@@ -11,4 +11,9 @@ class SourceAdmin(admin.ModelAdmin):
 
 @admin.register(Content)
 class ContentAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
     pass
