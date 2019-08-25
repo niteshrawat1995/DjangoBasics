@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.conf.urls import patterns, url, include
+
 
 from .models import Source, Content, Tag
 # Register your models here.
@@ -16,6 +18,8 @@ class ContentAdmin(admin.ModelAdmin):
     list_filter = ('created_at', 'created_by')
     search_fields = ('slug', 'name')
 
+    exclude = ["created_by", "modified_by"]
+
     fieldsets = (
         ('BASIC', {
             'fields': ('name', 'slug')
@@ -26,10 +30,23 @@ class ContentAdmin(admin.ModelAdmin):
         ('Files', {
             'fields': ('icon', 'doc'),
         }),
-        ('Authors', {
-            'fields': ('created_by', 'modified_by'),
-        }),
     )
+
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            obj.created_by = request.user
+        obj.modified_by = request.user
+        super(ContentAdmin, self).save_model(request, obj, form, change)
+
+    def get_urls(self):
+        urls = super(ContentAdmin, self).get_urls()
+        my_urls = [
+            url('newurl/', self.my_view)
+        ]
+
+    def my_view(self, request):
+        # do something
+        pass
 
 
 @admin.register(Tag)
