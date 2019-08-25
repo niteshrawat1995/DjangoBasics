@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
+from .managers import ContentManager
 
 SOURCE_TYPE = (
     ('edx', 'Edx'),
@@ -79,7 +80,17 @@ class Content(MXCatalog):
     modified_by = models.ForeignKey(
         to=User, on_delete=models.CASCADE, related_name=_("content_modified_by"))
 
+    objects = ContentManager()
+
     class Meta:
         verbose_name_plural = _("Content")
         verbose_name = _("Content")
         ordering = ["created_at"]
+
+    @property
+    def get_tag_count(self):
+        return self.tags.all().count()
+
+    @property()
+    def get_name_with_slug(self):
+        return "{},{}".format(name, slug)
