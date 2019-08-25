@@ -37,12 +37,12 @@ class Source(MXCatalog):
     modified_by = models.ForeignKey(
         to=User, on_delete=models.CASCADE, related_name=_("source_modified_by"))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:
-        verbose_name = _("Content Source")
-        verbose_name_plural = _("Content Sources")
+        verbose_name = _("Source")
+        verbose_name_plural = _("Sources")
         unique_together = (("name", "title"), )
 
 
@@ -59,6 +59,9 @@ class Tag(MXCatalog):
     name = models.CharField(verbose_name=_("Tag name"), max_length=255)
     is_active = models.BooleanField(
         verbose_name=_("Tag is applicable?"), default=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Content(MXCatalog):
@@ -82,8 +85,11 @@ class Content(MXCatalog):
 
     objects = ContentManager()
 
+    def __str__(self):
+        return self.slug
+
     class Meta:
-        verbose_name_plural = _("Content")
+        verbose_name_plural = _("Contents")
         verbose_name = _("Content")
         ordering = ["created_at"]
 
@@ -91,6 +97,6 @@ class Content(MXCatalog):
     def get_tag_count(self):
         return self.tags.all().count()
 
-    @property()
+    @property
     def get_name_with_slug(self):
         return "{},{}".format(name, slug)
