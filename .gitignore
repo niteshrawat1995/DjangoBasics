@@ -1,1 +1,4 @@
 venv/
+DjangoBasics/media/
+DjangoBasics/db.sqlite3
+DjangoBasics/DjangoBasics/__pycache__/
