@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'model_admin'
+    'django_admin_lightweight_date_hierarchy',
+    'model_admin',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +68,11 @@ TEMPLATES = [
         },
     },
 ]
+test = {
+    'libraries': {
+        'admin': 'model_admin.templatetags.admin_list',
+    }
+}
 
 WSGI_APPLICATION = 'DjangoBasics.wsgi.application'
 

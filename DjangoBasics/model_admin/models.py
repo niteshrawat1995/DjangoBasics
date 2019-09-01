@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
@@ -14,6 +16,7 @@ class MXCatalog(models.Model):
     """
     Base Class for this app's models.
     """
+    identifier = models.UUIDField(default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -78,6 +81,9 @@ class Content(MXCatalog):
     doc = models.FileField(verbose_name=_("Doc File"),
                            upload_to=upload_location, null=True, blank=True)
 
+    save_count = models.PositiveIntegerField(
+        verbose_name=_("Save Count"), default=0)
+
     created_by = models.ForeignKey(
         to=User, on_delete=models.CASCADE, related_name=_("content_created_by"))
     modified_by = models.ForeignKey(
@@ -87,6 +93,10 @@ class Content(MXCatalog):
 
     def __str__(self):
         return self.slug
+
+    def save(self, *args, **kwargs):
+        self.save_count += 1
+        super(Content, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = _("Contents")

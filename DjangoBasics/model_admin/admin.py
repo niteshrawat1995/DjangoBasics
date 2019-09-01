@@ -1,28 +1,34 @@
 from django.contrib import admin
-from django.conf.urls import patterns, url, include
-
+from django.conf.urls import url
 
 from .models import Source, Content, Tag
+from .filters import HighOrderFilter, SaveCountFilter
 # Register your models here.
 
 
 @admin.register(Source)
 class SourceAdmin(admin.ModelAdmin):
-    pass
+    date_hierarchy = 'created_at'
+    date_hierarchy_drilldown = False
+    list_filter = (HighOrderFilter, 'created_at')
 
 
 @admin.register(Content)
 class ContentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'slug', 'created_by', 'modified_by')
+    list_display = ('identifier', 'id', 'name', 'slug',
+                    'created_by', 'modified_by')
     list_display_links = ('id', 'name', 'slug')
-    list_filter = ('created_at', 'created_by')
+    list_filter = (SaveCountFilter, 'created_at', 'created_by')
     search_fields = ('slug', 'name')
+    date_hierarchy = 'created_at'
+    date_hierarchy_drilldown = False
+    readonly_fields = ['save_count']
 
     exclude = ["created_by", "modified_by"]
 
     fieldsets = (
         ('BASIC', {
-            'fields': ('name', 'slug')
+            'fields': ('name', 'slug', 'save_count')
         }),
         ('Relations', {
             'fields': ('source', 'tags'),
@@ -43,6 +49,7 @@ class ContentAdmin(admin.ModelAdmin):
         my_urls = [
             url('newurl/', self.my_view)
         ]
+        return my_urls + urls
 
     def my_view(self, request):
         # do something
@@ -51,4 +58,4 @@ class ContentAdmin(admin.ModelAdmin):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ('is_active', )
